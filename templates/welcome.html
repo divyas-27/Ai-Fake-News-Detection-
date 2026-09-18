@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <section class="auth-panel">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>Welcome to AI News Detector</h1>
+                <p>Detect fake news with confidence and keep your media intelligence secure.</p>
+            </div>
+        </div>
+
+        <div class="welcome-actions">
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-glow">Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-secondary btn-glow">Register</a>
+        </div>
+
+        <div class="welcome-info">
+            <p>New user? Register to save predictions, view analytics, and access your activity history.</p>
+            <p>Admin? Use the admin access page from the site menu to sign in securely.</p>
+        </div>
+    </section>
+</div>
+
+<style>
+.auth-shell {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(15, 23, 42, 0.95));
+    background-attachment: fixed;
+}
+
+.auth-panel {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(15, 23, 42, 0.92);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.brand-badge {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    color: white;
+}
+
+.brand h1 {
+    font-size: 2rem;
+    margin: 0 0 0.4rem 0;
+}
+
+.brand p {
+    margin: 0;
+    color: #cbd5e1;
+}
+
+.welcome-actions {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.welcome-actions .btn {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    font-size: 1rem;
+}
+
+.welcome-info {
+    margin-top: 2rem;
+    color: #94a3b8;
+    line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+    .auth-panel {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}

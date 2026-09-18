@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <section class="auth-panel login-panel">
+        <div class="login-visual">
+            <div class="login-visual-card">
+                <div class="brand-badge brand-badge-large">AI</div>
+                <div class="brand-copy">
+                    <h1>AI News Detector</h1>
+                    <p>Secure your research with intelligent AI fake news detection.</p>
+                </div>
+                <div class="login-illustration" aria-hidden="true">
+                    <svg viewBox="0 0 320 240" role="img">
+                        <rect x="42" y="34" width="236" height="172" rx="36" fill="rgba(255,255,255,0.12)" />
+                        <circle cx="112" cy="108" r="34" fill="#5b9dff" opacity="0.9" />
+                        <circle cx="208" cy="108" r="34" fill="#ae67fa" opacity="0.9" />
+                        <path d="M100 118c16-32 58-50 98-34" stroke="#fff" stroke-width="10" stroke-linecap="round" />
+                        <path d="M116 146h84" stroke="#fff" stroke-width="10" stroke-linecap="round" />
+                        <path d="M120 172h76" stroke="#fff" stroke-width="10" stroke-linecap="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-form-column">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="login-form">
+                <div class="login-form-heading">
+                    <h2>Welcome back</h2>
+                    <p>Sign in to continue analyzing content with confidence.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" pattern="\S+" title="Username cannot contain spaces" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="login-utility-row">
+                        <a href="{{ url_for('reset_password') }}" class="helper forgot-password-link">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-glow login-submit">Login</button>
+                <p class="login-switch">New User? <a href="{{ url_for('register') }}">Register</a></p>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}

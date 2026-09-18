@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction Result | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="app-shell single-view">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>News Pulse</h1>
+                <p>Result details for the latest report.</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('predict') }}"><span class="icon">🧠</span>Detect News</a>
+            <a href="{{ url_for('dashboard') }}"><span class="icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('analytics') }}"><span class="icon">📊</span>Analytics</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Logged in as <strong>{{ session.username }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section class="topbar glass-card">
+            <div class="greeting">
+                <h2>Prediction summary</h2>
+                <p>Review the model result and confidence analysis for this entry.</p>
+            </div>
+        </section>
+
+        <section class="result-panel glass-panel">
+            <div class="result-detail">
+                <div class="detail-card">
+                    <h3>Article excerpt</h3>
+                    <p>{{ news_text }}</p>
+                </div>
+                <div class="detail-card">
+                    <h3>Prediction</h3>
+                    <span class="prediction-tag prediction-{{ prediction.lower() }}">{{ prediction }}</span>
+                    <p><strong>Confidence:</strong> {{ confidence }}%</p>
+                </div>
+            </div>
+            <div class="actions">
+                <a href="{{ url_for('predict') }}" class="btn btn-primary">Analyze another</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">View history</a>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

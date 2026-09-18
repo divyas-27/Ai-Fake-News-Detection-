@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>AI News Detector</h1>
+                <p>AI-driven insights for trustworthy reporting.</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('predict') }}"><span class="icon">🧠</span>AI Fake News Detection</a>
+            <a href="{{ url_for('dashboard') }}" class="active"><span class="icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('history') }}"><span class="icon">📜</span>History</a>
+            <a href="{{ url_for('analytics') }}"><span class="icon">📊</span>Analytics</a>
+            <a href="{{ url_for('profile') }}"><span class="icon">👤</span>Profile</a>
+            <a href="{{ url_for('feedback') }}"><span class="icon">✉️</span>Feedback</a>
+            <a href="{{ url_for('admin_login') }}"><span class="icon">🛠️</span>Admin</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Logged in as <strong>{{ session.username }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section class="topbar glass-card">
+            <div class="greeting">
+                <h2>Welcome back, {{ session.username }} 👋</h2>
+                <p>Track your fake news predictions and review AI insights in one place.</p>
+            </div>
+            <div class="hero-actions">
+                <a href="{{ url_for('predict') }}" class="btn btn-primary btn-glow">Detect news</a>
+                <a href="{{ url_for('analytics') }}" class="btn btn-secondary">View analytics</a>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <strong>Total predictions</strong>
+                <span class="count">{{ total_predictions }}</span>
+            </article>
+            <article class="stat-card">
+                <strong>Fake labels</strong>
+                <span class="count">{{ fake_count }}</span>
+            </article>
+            <article class="stat-card">
+                <strong>Real labels</strong>
+                <span class="count">{{ real_count }}</span>
+            </article>
+        </section>
+
+        <section class="result-panel glass-panel">
+            <div class="hero-copy">
+                <h3>AI confidence at a glance</h3>
+                <p>Use real-time veracity scoring to understand how the model interprets news content.</p>
+            </div>
+            <div class="confidence-ring" style="--percent: {{ (fake_count + real_count) and ((fake_count / (fake_count + real_count)) * 100) or 0 }}">
+                <span>{{ fake_count + real_count }} total</span>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

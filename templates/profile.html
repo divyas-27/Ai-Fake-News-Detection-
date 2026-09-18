@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>AI News Detector</h1>
+                <p>Your account summary and bookmarks.</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('predict') }}"><span class="icon">🧠</span>AI Fake News Detection</a>
+            <a href="{{ url_for('dashboard') }}"><span class="icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('analytics') }}"><span class="icon">📊</span>Analytics</a>
+            <a href="{{ url_for('profile') }}" class="active"><span class="icon">👤</span>Profile</a>
+            <a href="{{ url_for('feedback') }}"><span class="icon">✉️</span>Feedback</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Logged in as <strong>{{ session.username }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section class="topbar glass-card">
+            <div class="greeting">
+                <h2>Profile overview</h2>
+                <p>Track how many detections you made and your overall credibility balance.</p>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <strong>Total predictions</strong>
+                <span class="count">{{ total_predictions }}</span>
+            </article>
+            <article class="stat-card">
+                <strong>Fake labels</strong>
+                <span class="count">{{ fake_count }}</span>
+            </article>
+            <article class="stat-card">
+                <strong>Real labels</strong>
+                <span class="count">{{ real_count }}</span>
+            </article>
+        </section>
+
+        <section class="result-panel glass-panel">
+            <h3>Personal analytics</h3>
+            {% if user_stats %}
+            <div class="feature-grid">
+                {% for stat in user_stats %}
+                <div class="feature-card">
+                    <div class="icon">📌</div>
+                    <h4>{{ stat[0] }}</h4>
+                    <p>{{ stat[1] }} predictions, average confidence {{ "%.2f"|format(stat[2] * 100) }}%</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="auth-hint">No analytics available yet. Create predictions to build your profile insights.</p>
+            {% endif %}
+        </section>
+    </main>
+</div>
+{% endblock %}

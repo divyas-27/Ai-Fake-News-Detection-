@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Feedback | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>News Pulse</h1>
+                <p>Share your thoughts and help improve the model.</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('predict') }}"><span class="icon">🧠</span>AI Fake News Detection</a>
+            <a href="{{ url_for('dashboard') }}"><span class="icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('analytics') }}"><span class="icon">📊</span>Analytics</a>
+            <a href="{{ url_for('profile') }}"><span class="icon">👤</span>Profile</a>
+            <a href="{{ url_for('feedback') }}" class="active"><span class="icon">✉️</span>Feedback</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Logged in as <strong>{{ session.username }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section class="topbar glass-card">
+            <div class="greeting">
+                <h2>Feedback</h2>
+                <p>Submit product ideas, model improvement requests, or bug reports.</p>
+            </div>
+        </section>
+
+        <section class="result-panel glass-panel">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="form-grid">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="Feedback subject" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="8" placeholder="Share your feedback here..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-glow">Submit feedback</button>
+            </form>
+        </section>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Test Input | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>News Pulse</h1>
+                <p>Try sample headlines and see how the system performs.</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('predict') }}"><span class="icon">🧠</span>Detect News</a>
+            <a href="{{ url_for('dashboard') }}"><span class="icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('test') }}" class="active"><span class="icon">🧪</span>Test Input</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Logged in as <strong>{{ session.username }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section class="topbar glass-card">
+            <div class="greeting">
+                <h2>Test Input</h2>
+                <p>Select a sample headline or paste your own text to benchmark the detector.</p>
+            </div>
+        </section>
+
+        <section class="result-panel glass-panel">
+            <div class="sample-grid">
+                {% for sample in samples %}
+                <button type="button" class="btn btn-secondary sample-btn" data-text="{{ sample.text | e }}">{{ sample.title }}</button>
+                {% endfor %}
+            </div>
+
+            <form method="POST" action="{{ url_for('predict') }}" enctype="multipart/form-data" class="form-grid">
+                <div class="form-group">
+                    <label for="news_text">Test News Text</label>
+                    <textarea id="news_text" name="news_text" rows="8" placeholder="Choose a sample headline or paste your own news text..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow">Detect</button>
+            </form>
+        </section>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.sample-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.getElementById('news_text').value = button.dataset.text;
+        });
+    });
+</script>
+{% endblock %}

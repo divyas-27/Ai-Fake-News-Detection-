@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+
+{% block title %}Accept Terms - AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="acceptance-shell">
+    <section class="acceptance-container">
+        <div class="acceptance-header">
+            <div class="brand-badge" style="width: 80px; height: 80px; font-size: 2rem;">AI</div>
+            <h1>Welcome to AI News Detector</h1>
+            <p>Please review and accept our policies before proceeding</p>
+        </div>
+
+        <!-- All Policies Combined in Single View -->
+        <div class="policies-combined">
+            <!-- Privacy Policy Section -->
+            <section class="policy-main-section">
+                <h2>📄 Privacy Policy</h2>
+                <p class="section-date">Last Updated: June 2026</p>
+
+                <div class="policy-subsection">
+                    <h3>1. Overview</h3>
+                    <p>AI Fake News Detection collects and uses your account, prediction, and usage data to provide secure analysis and improve the service.</p>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>2. What We Collect</h3>
+                    <ul>
+                        <li><strong>Account data:</strong> username, email, and password hash</li>
+                        <li><strong>Prediction data:</strong> submitted news content and analysis results</li>
+                        <li><strong>Usage data:</strong> history, timestamps, and interaction patterns</li>
+                        <li><strong>Technical data:</strong> IP address and device/browser information</li>
+                    </ul>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>3. How We Use It</h3>
+                    <ul>
+                        <li>Provide and improve AI fake news detection</li>
+                        <li>Personalize analytics and account experience</li>
+                        <li>Send service notices and account updates</li>
+                        <li>Protect the platform from misuse and fraud</li>
+                    </ul>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>4. Your Rights</h3>
+                    <ul>
+                        <li>Access your personal data</li>
+                        <li>Correct inaccurate information</li>
+                        <li>Request deletion of your data</li>
+                        <li>Contact us for support or privacy questions</li>
+                    </ul>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>5. Security & Retention</h3>
+                    <p>We protect your information with industry-standard security measures and retain it only as long as needed for account and service purposes.</p>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>6. Contact</h3>
+                    <p>Questions? Contact <strong>support@aiefakenews.com</strong>.</p>
+                </div>
+            </section>
+
+            <hr class="policy-divider">
+
+            <!-- Terms & Conditions Section -->
+            <section class="policy-main-section">
+                <h2>⚖️ Terms & Conditions</h2>
+                <p class="section-date">Last Updated: June 2026</p>
+
+                <div class="policy-subsection">
+                    <h3>1. Acceptance</h3>
+                    <p>By using AI Fake News Detection, you agree to use the service responsibly and follow the platform rules.</p>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>2. Allowed Use</h3>
+                    <ul>
+                        <li>Use the service for personal and lawful purposes</li>
+                        <li>Provide accurate account and contact information</li>
+                        <li>Respect intellectual property and platform access rules</li>
+                    </ul>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>3. Prohibited Actions</h3>
+                    <ul>
+                        <li>Do not misuse, reverse engineer, or overload the platform</li>
+                        <li>Do not attempt unauthorized access or distribute harmful content</li>
+                        <li>Do not submit content that violates laws or platform policies</li>
+                    </ul>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>4. Service Limitations</h3>
+                    <p>Results are provided for assistance and may not be perfect. You should verify important information independently.</p>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>5. Account Responsibility</h3>
+                    <p>You are responsible for protecting your login credentials and maintaining the accuracy of your account details.</p>
+                </div>
+
+                <div class="policy-subsection">
+                    <h3>6. Contact</h3>
+                    <p>Questions? Contact <strong>legal@aiefakenews.com</strong>.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Acceptance Form -->
+        <form method="POST" action="{{ url_for('accept_policies') }}" class="acceptance-form">
+            <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1rem;">Confirm Your Acceptance</h3>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="privacyAccept" name="privacy_accept" required>
+                    <span>I have read and accept the <strong>Privacy Policy</strong></span>
+                </label>
+            </div>
+
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="termsAccept" name="terms_accept" required>
+                    <span>I have read and accept the <strong>Terms & Conditions</strong></span>
+                </label>
+            </div>
+
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="dataAccept" name="data_accept" required>
+                    <span>I understand that my prediction data will be used to improve the service</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary">Decline & Logout</a>
+                <button type="submit" class="btn btn-primary btn-glow" id="acceptBtn" disabled>Accept All & Continue</button>
+            </div>
+
+            <p class="info-text">⚠️ You must accept all policies to proceed to your dashboard</p>
+        </form>
+    </section>
+</div>
+
+<style>
+.acceptance-shell {
+    background: linear-gradient(135deg, rgba(70, 130, 180, 0.15), rgba(140, 100, 150, 0.15));
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.acceptance-container {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 1.5rem;
+    max-width: 900px;
+    width: 100%;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.acceptance-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(70, 130, 180, 0.2);
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 100;
+}
+
+.brand-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4682b4, #8c6496);
+    color: white;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    font-weight: bold;
+}
+
+.acceptance-header h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.acceptance-header p {
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+/* All Policies Combined */
+.policies-combined {
+    background: rgba(245, 245, 245, 0.6);
+    border: 1px solid rgba(200, 200, 200, 0.3);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    max-height: 600px;
+    overflow-y: auto;
+    color: #2c3e50;
+    line-height: 1.8;
+}
+
+.policies-combined::-webkit-scrollbar {
+    width: 8px;
+}
+
+.policies-combined::-webkit-scrollbar-track {
+    background: rgba(200, 200, 200, 0.1);
+    border-radius: 10px;
+}
+
+.policies-combined::-webkit-scrollbar-thumb {
+    background: #4682b4;
+    border-radius: 10px;
+}
+
+.policy-main-section {
+    margin-bottom: 2rem;
+}
+
+.policy-main-section h2 {
+    color: #34495e;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 3px solid #4682b4;
+    padding-bottom: 0.75rem;
+}
+
+.section-date {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.policy-subsection {
+    margin: 1.5rem 0;
+}
+
+.policy-subsection h3 {
+    color: #34495e;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid #4682b4;
+    padding-left: 0.75rem;
+}
+
+.policy-subsection p {
+    margin-bottom: 0.75rem;
+}
+
+.policy-subsection ul {
+    margin-left: 1.5rem;
+    list-style: none;
+}
+
+.policy-subsection ul li {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.policy-subsection ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #4682b4;
+    font-weight: bold;
+}
+
+.policy-divider {
+    border: none;
+    border-top: 2px dashed rgba(70, 130, 180, 0.3);
+    margin: 2rem 0;
+}
+
+/* Acceptance Form */
+.acceptance-form {
+    background: rgba(245, 245, 245, 0.9);
+    border: 2px solid rgba(70, 130, 180, 0.2);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.checkbox-group {
+    margin: 0.75rem 0;
+    text-align: left;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    gap: 0.75rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #4682b4;
+    flex-shrink: 0;
+}
+
+.checkbox-label span {
+    line-height: 1.4;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary {
+    background: rgba(100, 100, 100, 0.3);
+    color: #2c3e50;
+}
+
+.btn-secondary:hover {
+    background: rgba(100, 100, 100, 0.5);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4682b4, #36648b);
+    color: white;
+}
+
+.btn-primary:disabled {
+    background: rgba(100, 100, 100, 0.3);
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-primary:enabled:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(70, 130, 180, 0.3);
+}
+
+.btn-glow {
+    position: relative;
+}
+
+.info-text {
+    text-align: center;
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .acceptance-container {
+        padding: 1rem;
+    }
+
+    .policies-combined {
+        max-height: 400px;
+        padding: 1rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .acceptance-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .policy-main-section h2 {
+        font-size: 1.3rem;
+    }
+
+    .policy-subsection h3 {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<script>
+    const privacyCheckbox = document.getElementById('privacyAccept');
+    const termsCheckbox = document.getElementById('termsAccept');
+    const dataCheckbox = document.getElementById('dataAccept');
+    const acceptBtn = document.getElementById('acceptBtn');
+
+    function updateButtonState() {
+        const allChecked = privacyCheckbox.checked && termsCheckbox.checked && dataCheckbox.checked;
+        acceptBtn.disabled = !allChecked;
+    }
+
+    privacyCheckbox.addEventListener('change', updateButtonState);
+    termsCheckbox.addEventListener('change', updateButtonState);
+    dataCheckbox.addEventListener('change', updateButtonState);
+    updateButtonState();
+</script>
+{% endblock %}

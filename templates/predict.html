@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block title %}Detect Fake News | AI Fake News Detection{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>News Pulse</h1>
+                <p>Real-time detection powered by explainable AI.</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('predict') }}" class="active"><span class="icon">🧠</span>Detect News</a>
+            <a href="{{ url_for('dashboard') }}"><span class="icon">🏠</span>Dashboard</a>
+            <a href="{{ url_for('analytics') }}"><span class="icon">📊</span>Analytics</a>
+            <a href="{{ url_for('profile') }}"><span class="icon">👤</span>Profile</a>
+            <a href="{{ url_for('feedback') }}"><span class="icon">✉️</span>Feedback</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <p>Logged in as <strong>{{ session.username }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section class="topbar glass-card">
+            <div class="greeting">
+                <h2>AI Fake News Detection</h2>
+                <p>Paste your article, URL, or image text and get instant credibility results.</p>
+            </div>
+            <div class="hero-actions">
+                <span class="prediction-tag prediction-real">AI Assist</span>
+            </div>
+        </section>
+
+        <section class="result-panel glass-panel">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="url-voice-grid">
+                <div class="form-group input-inline">
+                    <label for="article_url">Analyze article URL</label>
+                    <div class="input-inline-row">
+                        <input type="url" id="article_url" name="article_url" placeholder="https://example.com/news-article">
+                        <button type="button" id="analyzeUrlBtn" class="btn btn-secondary">Analyze URL</button>
+                    </div>
+                </div>
+
+                <div class="form-group voice-group">
+                    <label>Voice input</label>
+                    <div class="voice-control">
+                        <button type="button" id="micButton" class="btn btn-secondary btn-mic">🎙 Start voice input</button>
+                        <span id="voiceStatus" class="voice-status">Ready to listen</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="predictForm" action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" class="form-grid">
+                <div class="form-group">
+                    <label for="news_text">News content</label>
+                    <textarea id="news_text" name="news_text" rows="8" placeholder="Paste news text here..."></textarea>
+                    <p class="helper">You can also upload a .txt file instead of pasting content.</p>
+                </div>
+                <div class="form-group">
+                    <label for="file">Upload file</label>
+                    <input type="file" id="file" name="file" accept=".txt">
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow">Analyze now</button>
+            </form>
+
+            <div id="loadingSpinner" class="loading-screen" style="display:none;">
+                <div class="loader">
+                    <div class="loader-dot"></div>
+                    <div class="loader-dot"></div>
+                    <div class="loader-dot"></div>
+                </div>
+                <p>Analyzing with the AI engine...</p>
+            </div>
+
+            <section id="resultContainer" class="prediction-panel glass-panel" style="display:none;">
+                <div>
+                    <h3>Result Overview</h3>
+                    <p><strong>Prediction:</strong> <span id="predictionLabel" class="prediction-tag prediction-real">Real</span></p>
+                    <p><strong>Confidence:</strong> <span id="predictionConfidence">0</span>%</p>
+                    <p><strong>Explanation:</strong> <span id="explanationText">AI model reasoning appears here.</span></p>
+                </div>
+            </section>
+        </section>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const resultContainer = document.getElementById('resultContainer');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const predictionLabel = document.getElementById('predictionLabel');
+    const predictionConfidence = document.getElementById('predictionConfidence');
+    const explanationText = document.getElementById('explanationText');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const micButton = document.getElementById('micButton');
+
+    function showResult(data) {
+        predictionLabel.textContent = data.prediction;
+        predictionLabel.className = 'prediction-tag prediction-' + data.prediction.toLowerCase();
+        predictionConfidence.textContent = data.confidence;
+        explanationText.textContent = data.reasons || 'Explanation not available.';
+        resultContainer.style.display = 'block';
+    }
+
+    function showLoading() {
+        loadingSpinner.style.display = 'grid';
+        resultContainer.style.display = 'none';
+    }
+
+    function hideLoading() {
+        loadingSpinner.style.display = 'none';
+    }
+
+    document.getElementById('predictForm').addEventListener('submit', function(event) {
+        const newsTextElement = document.getElementById('news_text');
+        const newsText = newsTextElement ? newsTextElement.value.trim() : '';
+        const fileInput = document.getElementById('file');
+        const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+
+        if (!newsText && !hasFile) {
+            event.preventDefault();
+            alert('Please enter news text or select a file to upload.');
+            return;
+        }
+
+        if (newsText && !hasFile) {
+            event.preventDefault();
+            showLoading();
+            fetch('{{ url_for('api_predict') }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: newsText })
+            })
+            .then(async resp => {
+                const text = await resp.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (error) {
+                    throw new Error('Invalid JSON response: ' + text);
+                }
+                if (!resp.ok) {
+                    const message = data.error || data.message || 'Unknown server error';
+                    throw new Error(message);
+                }
+                return data;
+            })
+            .then(data => {
+                hideLoading();
+                showResult(data);
+            })
+            .catch(error => {
+                hideLoading();
+                console.error(error);
+                alert('Unable to analyze news at this time. ' + (error.message || 'Please try again later.'));
+            });
+        }
+    });
+
+    const analyzeUrlBtn = document.getElementById('analyzeUrlBtn');
+    if (analyzeUrlBtn) {
+        analyzeUrlBtn.addEventListener('click', function() {
+            const articleUrl = document.getElementById('article_url').value.trim();
+            if (!articleUrl) {
+                alert('Please enter a valid article URL.');
+                return;
+            }
+
+            showLoading();
+            fetch('{{ url_for('api_predict_url') }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: articleUrl })
+            })
+            .then(async resp => {
+                const text = await resp.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (error) {
+                    throw new Error('Invalid JSON response: ' + text);
+                }
+                if (!resp.ok) {
+                    const message = data.error || data.message || 'Unknown server error';
+                    throw new Error(message);
+                }
+                return data;
+            })
+            .then(data => {
+                hideLoading();
+                document.getElementById('news_text').value = data.text || '';
+                showResult(data);
+            })
+            .catch(error => {
+                hideLoading();
+                console.error(error);
+                alert('Unable to analyze the URL. ' + (error.message || 'Please try again later.'));
+            });
+        });
+    }
+
+    let recognition;
+    let isListening = false;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    function setVoiceState(active) {
+        isListening = active;
+        if (micButton) {
+            micButton.textContent = active ? '⏹ Stop voice input' : '🎙 Start voice input';
+        }
+        if (voiceStatus) {
+            voiceStatus.textContent = active ? 'Listening...' : 'Ready to listen';
+        }
+    }
+
+    function submitVoiceText(text) {
+        if (!text) {
+            return;
+        }
+        showLoading();
+        fetch('{{ url_for('api_predict_voice') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ voice_text: text })
+        })
+        .then(async resp => {
+            const text = await resp.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (error) {
+                throw new Error('Invalid JSON response: ' + text);
+            }
+            if (!resp.ok) {
+                const message = data.error || data.message || 'Unknown server error';
+                throw new Error(message);
+            }
+            return data;
+        })
+        .then(data => {
+            hideLoading();
+            showResult(data);
+        })
+        .catch(error => {
+            hideLoading();
+            console.error(error);
+            alert('Unable to analyze voice input. ' + (error.message || 'Please try again later.'));
+        });
+    }
+
+    if (micButton) {
+        if (!SpeechRecognition) {
+            micButton.disabled = true;
+            if (voiceStatus) {
+                voiceStatus.textContent = 'Speech recognition unavailable in this browser.';
+            }
+        } else {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.addEventListener('start', function() {
+                setVoiceState(true);
+            });
+
+            recognition.addEventListener('result', function(event) {
+                const transcript = Array.from(event.results).map(r => r[0].transcript).join(' ');
+                document.getElementById('news_text').value = transcript;
+                if (voiceStatus) {
+                    voiceStatus.textContent = 'Captured voice text. Sending for prediction...';
+                }
+                submitVoiceText(transcript);
+            });
+
+            recognition.addEventListener('end', function() {
+                setVoiceState(false);
+            });
+
+            recognition.addEventListener('error', function(event) {
+                setVoiceState(false);
+                if (voiceStatus) {
+                    voiceStatus.textContent = 'Voice recognition error: ' + (event.error || 'unknown');
+                }
+            });
+
+            micButton.addEventListener('click', function() {
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    try {
+                        recognition.start();
+                    } catch (error) {
+                        if (voiceStatus) {
+                            voiceStatus.textContent = 'Unable to start microphone.';
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}
